@@ -1,0 +1,80 @@
+{% extends 'home/layout.html' %}
+{% block content %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" >
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('home.home')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Users</li>
+        </ol>
+    </nav>
+    <!-- Search Input Form -->
+    <form action="{{ url_for('manage_users.manage_users') }}" method="GET" class="mt-3 mb-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search users..." name="search_query" value="{{ search_query }}">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </form>
+    {% if search_query %}
+        <!-- Back button to go back to Manage Users after searching -->
+        <a href="{{url_for('manage_users.manage_users')}}" class="btn btn-sm btn-secondary mb-3">Back to Manage Users</a>
+    {% endif %}
+    {% if all_users_len == 0 %}
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </symbol>
+        </svg>
+        <div class="alert alert-primary d-flex align-items-center" role="alert" style="margin-top: 30px;">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+            <div>
+                You haven't added any Pre-Sales Support users
+            </div>
+        </div>
+    {% else %}
+        <table class="table tamble-sm table-bordered table-hover" style="margin-top: 30px;">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Role</th> -->
+                    <th scope="col">Location</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in all_users %}
+                    {% if user.role != 'Admin' and  user != current_user %}
+                        <tr>
+                            <td>{{user.first_name}}</td>
+                            <td>{{user.last_name}}</td>
+                            <td>{{user.email}}</td>
+                            <!-- <td>{{user.role}}</td> -->
+                            <td>{{user.location}}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="{{url_for('manage_users.delete_user', user_id=user.id)}}" class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="{{url_for('manage_users.update_user', user_id=user.id)}}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="#" class="btn btn-success btn-sm">View</a>
+                              </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="rounded-0">
+            {% for page_num in all_users.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+              {% if page_num %}
+                {% if all_users.page == page_num %}
+                  <a class="btn btn-secondary btn-sm mt-2" href="{{ url_for('manage_users.manage_users',page=page_num)}}">{{ page_num }}</a>
+                {% else %}
+                  <a class="btn btn-outline-info mt-2" href="{{ url_for('manage_users.manage_users',page=page_num)}}">{{ page_num }}</a>
+                {% endif %}  
+              {% else %}
+                  ...
+              {% endif %}
+            {% endfor %}
+          </div>
+    {% endif %}
+{% endblock content %}

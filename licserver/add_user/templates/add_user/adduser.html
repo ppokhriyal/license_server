@@ -1,0 +1,53 @@
+{% extends 'home/layout.html' %}
+{% block content %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" >
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('home.home')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+            <li class="breadcrumb-item active" aria-current="page">Add New User</li>
+        </ol>
+    </nav>
+    <form method="POST" action="" style="margin-top: 30px;">
+        {{ form.hidden_tag() }}
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">First Name</label>
+            <div class="col-sm-10">
+                {{form.first_name(class='form-control')}}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Last Name</label>
+            <div class="col-sm-10">
+                {{form.last_name(class='form-control')}}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Email Address</label>
+            <div class="col-sm-10">
+                {% if form.email.errors %}
+                    {{form.email(class='form-control is-invalid')}}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{form.email(class='form-control')}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                {{form.password(class='form-control')}}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">User Location</label>
+            <div class="col-sm-10">
+                {{form.user_location(class='form-select')}}
+            </div>
+        </div>
+        {{form.submit(class='btn btn-sm btn-secondary')}}
+    </form>
+{% endblock content%}

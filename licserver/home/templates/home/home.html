@@ -1,0 +1,114 @@
+{% extends 'home/layout.html' %}
+{% block content %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        {% if current_user.role == 'Admin' %}
+            <button class="btn btn-sm btn-secondary me-md-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" type="button">Pre-Sales Support Users</button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <li><a class="dropdown-item" href="{{url_for('add_user.add_new_user')}}">Add New User</a></li>
+                <li><a class="dropdown-item" href="{{url_for('manage_users.manage_users')}}">Manage Users</a></li>
+            </ul>
+        {% endif %}
+        <button class="btn btn-sm btn-success me-md-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" type="button">Clients</button>
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <li><a class="dropdown-item" href="{{url_for('add_client.add_new_client')}}">Add New Client</a></li>
+            <li><a class="dropdown-item" href="{{url_for('manage_clients.manage_clients')}}">Manage Clients</a></li>
+        </ul>
+    </div>
+    <div class="container-fluid p-0 mt-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card seamless-card">
+                    <div class="d-flex card-header justify-content-between align-items-center">
+                        <h4 class="header-title">Pre-Sales Support Team</h4>
+                    </div>
+                    <div class="card-body pt-0 seamless-card">
+                        <div>
+                            <div id="vmap" style="width:100%; height: 220px"></div>
+                            <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.world.js"></script>
+                            <script type="text/javascript">
+                                var countries = '';
+                                $.getJSON('{{ url_for("static", filename="jsons/countries.json") }}', function(data) {
+                                    countries = data;
+                                });
+                                $(document).ready(function(){
+                                  $("#vmap").vectorMap({
+                                    map: 'world_en',
+                                    backgroundColor:'#222',
+                                    borderColor:'#555',
+                                    color:'#555',
+                                    hoverOpacity:0.7,
+                                    selectedColor:'#ffffff',
+                                    enableZoom:true,
+                                    enableDrag:true,
+                                    showTooltip:true,
+                                    normalizeFunction:'polynomial',
+                                    onLabelShow:function(event,label,code){
+                                      code = code.toUpperCase();
+                                      country_name = countries[code];
+                                      label.html('<strong>'+country_name+'</strong>');
+                                    },
+                                    selectedRegions: ['US', 'IN', 'DE', 'GB', 'FR', 'AE']
+                                  });
+                                });
+                            </script>
+                        </div>
+                        <div>
+                            {% if not user_counts_dict %}
+                                <div class="alert alert-primary d-flex align-items-center border-0 rounded-0" role="alert">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                    </svg>
+                                    <div class="pt-0">
+                                        Add Pre-Sales Support User
+                                    </div>
+                                </div>
+                            {% else%}
+                                {% for location, user_count in user_counts_dict.items() %}
+                                    <div class="row g-0 align-items-center py-2 position-relative border-bottom border-200">
+                                        <div class="col ps-x1 py-1 position-static">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar avatar-xl me-3">
+                                                    <div class="avatar-name rounded-circle">
+                                                        <span><img src="{{ url_for('static', filename='flags/' + location.lower() + '.svg') }}" alt="{{ location }}" style="width: 20px; height: 20px;"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h6 class="mb-0 d-flex align-items-center">
+                                                        {{location}}            
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col py-1">
+                                            <div class="row flex-end-center g-0">
+                                                <div class="col-auto pe-2">
+                                                    <span class="badge bg-primary rounded-pill">{{user_count}}</span>        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <!-- <ul class="list-group seamless-card">
+                                    {% for location, user_count in user_counts_dict.items() %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-left">
+                                            <img src="{{ url_for('static', filename='flags/' + location.lower() + '.svg') }}" alt="{{ location }}" style="width: 20px; height: 20px;">
+                                            {{location}}
+                                            <span class="badge bg-primary rounded-pill">{{user_count}}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul> -->
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content%}

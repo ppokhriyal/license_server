@@ -1,0 +1,104 @@
+{% extends 'home/layout.html' %}
+{% block content %}
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" >
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('home.home')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Clients</li>
+            <li class="breadcrumb-item active" aria-current="page">Add New Client</li>
+        </ol>
+    </nav>
+    <div class="container pt-3">
+        <div class="row">
+            <form class="row g-3" method="post" action="">
+              {{ form.hidden_tag() }}
+              <div class="col">
+                <div class="col-10">
+                  <label class="form-label">Client Name</label>
+                  {% if form.customer_name.error %}
+                    {{form.customer_name(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.customer_name.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{form.customer_name(class="form-control")}}
+                  {% endif %}
+                </div>
+                <div class="col-10 mt-2">
+                  <label class="form-label">Client Email</label>
+                  {% if form.customer_email.error %}
+                    {{form.customer_email(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.customer_email.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{form.customer_email(class="form-control")}}
+                  {% endif %}
+                </div>
+                <div class="col-10 mt-2">
+                  <label class="form-label">Client Address</label>
+                  {% if form.customer_address.error %}
+                    {{form.customer_address(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.customer_address.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{form.customer_address(class="form-control")}}
+                  {% endif %}
+                </div>
+                <div class="col-10 mt-2">
+                  <label class="form-label">Client Contact Number</label>
+                  {% if form.customer_contact_number.error %}
+                    {{form.customer_contact_number(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                      {% for error in form.customer_contact_number.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{form.customer_contact_number(class="form-control")}}
+                  {% endif %}
+                </div>
+                <div class="col-10 mt-2">
+                  <label class="form-label">Client Location</label>
+                  {{form.customer_location(class=("form-select"))}}
+                </div>
+              </div>
+              <div class="col border-start ps-5">
+                <div class="col">
+                  <label class="form-label">Contact Person Name</label>
+                  {{form.contact_person_name(class=("form-control"))}}
+                </div>
+                <div class="col mt-2">
+                  <label class="form-label">Contact Person Email</label>
+                  {{form.contact_person_email(class=("form-control"))}}
+                </div>
+                <div class="col mt-2">
+                  <label class="form-label">Contact Person Number</label>
+                  {{form.contact_person_number(class=("form-control"))}}
+                </div>
+                <div class="col mt-2">
+                  <label class="form-label">Partner Name</label>
+                  {{form.partner_name(class=("form-control"))}}
+                </div>
+                <div class="col mt-2">
+                  <label for="inputState" class="form-label">Assign to User</label>
+                  <select id="inputState" name="assigned_user" class="form-select">
+                    {% for value, label in form.assigned_user.choices %}
+                      <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 pt-4">
+                {{form.submit(class="btn btn-sm btn-primary")}} 
+              </div>
+            </form>
+        </div>
+    </div>
+{% endblock content%}
